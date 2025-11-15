@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "USER")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
     @Column(name = "FULL_NAME")
@@ -17,8 +17,14 @@ public class User {
     private int phoneNumber;
     @Column(name = "PASSWORD")
     private String password;
+    @Column(name="AGE")
+    private int age;
+    @Column(name="IMG")
+    @Lob
+    private byte[] img;
 
-    @OneToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -72,5 +78,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
     }
 }

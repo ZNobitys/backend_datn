@@ -1,6 +1,6 @@
 package org.example.user.entity;
 
-import org.example.user.reponsitory.RoleReponsitory;
+import org.example.user.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class DBRole {
 
     @Bean
-    CommandLineRunner initRoles(RoleReponsitory roleReponsitory) {
+    CommandLineRunner initRoles(RoleRepository roleReponsitory) {
         return args -> {
             if (roleReponsitory.findByRoleName("ROLE_ADMIN").isEmpty()) {
                 roleReponsitory.save(new Role("ROLE_ADMIN", "Quản lý"));
