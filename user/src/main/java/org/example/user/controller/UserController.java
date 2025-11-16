@@ -1,7 +1,5 @@
 package org.example.user.controller;
 
-import jdk.dynalink.linker.LinkerServices;
-import org.apache.catalina.Role;
 import org.example.user.entity.User;
 import org.example.user.request.CreateUserRequest;
 import org.example.user.request.LoginUserRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
