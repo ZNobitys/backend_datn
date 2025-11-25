@@ -1,31 +1,44 @@
 package org.example.booking.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class BookingRequest {
-    private int bookingId;
     private String bookingDate;
     private String details;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime bookingCreateDate;
     private Integer userId;
     private Integer carId;
-    private  Integer status;
+    private Integer statusId;
+    private Integer componentsId;
+    private Integer quantityComponents;
 
-    public Integer getStatus() {
-        return status;
+    public Integer getQuantityComponents() {
+        return quantityComponents;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setQuantityComponents(Integer quantityComponents) {
+        this.quantityComponents = quantityComponents;
     }
 
-    public int getBookingId() {
-        return bookingId;
+    public Integer getComponentsId() {
+        return componentsId;
     }
 
-    public void setBookingId(int bookingId) {
-        this.bookingId = bookingId;
+    public void setComponentsId(Integer componentsId) {
+        this.componentsId = componentsId;
     }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
 
     public String getBookingDate() {
         return bookingDate;

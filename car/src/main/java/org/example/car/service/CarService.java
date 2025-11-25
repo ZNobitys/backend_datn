@@ -8,6 +8,7 @@ import org.example.car.repository.CarRepository;
 import org.example.car.repository.CategoryRepository;
 import org.example.car.request.CarRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,8 @@ public class CarService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    private final String SECRET_KEY = "MySuperSecretKeyThatIsAtLeast32Chars!";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     // Add car
     public Car createCar(CarRequest carRequest, String token) {
@@ -93,20 +94,25 @@ public class CarService {
         return carRepository.findAll();
     }
 
+    public List<Car> getCarsByLicensePlate(String licensePlate) {
+        List<Car> cars = carRepository.findCarBylicensePlate(licensePlate);
+        if (cars.isEmpty()) {
+            throw new RuntimeException("xe không tồn tại");
+        }
+        return cars;
+    }
+
     public Car updateCar(Integer carId, CarRequest carRequest, String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token.replace("Bearer ", "")).getBody();
 
         Integer userIdFromToken = Integer.parseInt(claims.getSubject());
         List<String> roles = claims.get("roles", List.class);
-
-        // Lấy xe từ DB
         Car car = carRepository.findById(carId).orElseThrow(() -> new RuntimeException("Xe không tồn tại"));
 
         if (!roles.contains("ROLE_ADMIN") && (car.getOwnerId() == null || !car.getOwnerId().equals(userIdFromToken))) {
             throw new AccessDeniedException("Bạn không có quyền xóa xe này");
         }
 
-        // Update các trường cơ bản
         if (carRequest.getNameCar() != null) car.setNameCar(carRequest.getNameCar());
         if (carRequest.getColor() != null) car.setColor(carRequest.getColor());
         if (carRequest.getYear() != null) car.setYear(carRequest.getYear());

@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
-
-
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -58,7 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("JWT parsing failed: " + e.getMessage());
             e.printStackTrace();
         }
-
         filterChain.doFilter(request, response);
     }
 }

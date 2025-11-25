@@ -37,7 +37,6 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Loại xe không tồn tại"));
 
         categoryRepository.findCategoryByCategoryName(categoryRequest.getCategoryName()).ifPresent(existing -> {
-            // So sánh bằng != nếu là int, hoặc .equals nếu là Integer
             if (existing.getCategoryId() != categoryId) {
                 throw new RuntimeException("Tên loại xe đã tồn tại");
             }

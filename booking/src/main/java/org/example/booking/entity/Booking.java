@@ -1,5 +1,6 @@
 package org.example.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -18,25 +19,34 @@ public class Booking {
     @Column(name = "DETAILS")
     private String details;
     @Column(name = "BOOKING_CREATEDATE")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime bookingCreateDate;
     @Column(name = "USER_ID")
     private int userId;
     @Column(name = "CAR_ID")
     private int carId;
+    @Column(name = "COMPONENTS_ID")
+    private int componentsId;
+    @Column(name = "QUANTITY_COMPONENTS")
+    private int quantityComponents;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "STATUS_BOOKING",
-            joinColumns = @JoinColumn(name = "BOOKING_ID"),
-            inverseJoinColumns = @JoinColumn(name = "STATUS_ID")
-    )
-    private Booking status;
+    @JoinTable(name = "STATUS_BOOKING", joinColumns = @JoinColumn(name = "BOOKING_ID"), inverseJoinColumns = @JoinColumn(name = "STATUS_ID"))
+    private Status status;
 
-    public Booking getStatus() {
+    public int getQuantityComponents() {
+        return quantityComponents;
+    }
+
+    public void setQuantityComponents(int quantityComponents) {
+        this.quantityComponents = quantityComponents;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Booking status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -86,5 +96,13 @@ public class Booking {
 
     public void setCarId(int carId) {
         this.carId = carId;
+    }
+
+    public int getComponentsId() {
+        return componentsId;
+    }
+
+    public void setComponentsId(int componentsId) {
+        this.componentsId = componentsId;
     }
 }

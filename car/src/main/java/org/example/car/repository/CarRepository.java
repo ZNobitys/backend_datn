@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface CarRepository extends JpaRepository<Car, Integer> {
     Optional<Car> findCarByNameCar(String carName);
-
     Optional<Car> findCarByCarId(Integer carId);
-
     List<Car> findCarByOwnerId(Integer ownerId);
+    List<Car> findCarBylicensePlate(String licensePlate);
 }

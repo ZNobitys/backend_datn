@@ -49,4 +49,9 @@ public class CarController {
         carService.deleteCar(carId, token);
         return "Đã xóa thành công";
     }
+
+    @GetMapping("/get/{licensePlate}")
+    public List<Car> getCar(@PathVariable String licensePlate) {
+        return carService.getCarsByLicensePlate(licensePlate);
+    }
 }

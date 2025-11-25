@@ -55,4 +55,13 @@ public class ComponentsService {
         return componentsReponsitory.findAll();
     }
 
+    public Components decreaseQuantity(Integer componentsId, Integer quantity) {
+        Components components = getComponentsById(componentsId);
+        if (components.getQuantity() < quantity) {
+            throw new RuntimeException("Số lượng sản phẩm không đủ");
+        }
+        components.setQuantity(components.getQuantity() - quantity);
+        return componentsReponsitory.save(components);
+    }
+
 }

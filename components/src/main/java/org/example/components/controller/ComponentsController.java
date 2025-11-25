@@ -43,5 +43,10 @@ public class ComponentsController {
         return "Đã xóa thành công";
     }
 
+    @PutMapping("decreasequantity/{componentsId}")
+    Components decreaseQuantity(@PathVariable("componentsId") Integer componentsId, @RequestParam Integer quantity) {
+        return componentsService.decreaseQuantity(componentsId, quantity);
+    }
+
 
 }
