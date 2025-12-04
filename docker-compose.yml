@@ -1,0 +1,79 @@
+version: '3.9'
+
+networks:
+  devteria-network:
+    driver: bridge
+
+services:
+
+  # MySQL cho User Service
+  mysql-user:
+    image: mysql:8
+    container_name: mysql-user
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: datn_user
+    ports:
+      - "3307:3306"
+    networks:
+      - devteria-network
+
+  # MySQL cho Booking Service
+  mysql-booking:
+    image: mysql:8
+    container_name: mysql-booking
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: datn_booking
+    ports:
+      - "3308:3306"
+    networks:
+      - devteria-network
+
+  # Config Server
+  config-server:
+    build: ./config
+    container_name: config-server
+    ports:
+      - "8001:8001"
+    networks:
+      - devteria-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+      - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS=/config-repo
+    volumes:
+      - ./config_repo:/config-repo
+
+  # User Service
+  user-service:
+    build: ./user
+    container_name: user-service
+    ports:
+      - "8002:8002"
+    networks:
+      - devteria-network
+    depends_on:
+      - mysql-user
+      - config-server
+    environment:
+      - SPRING_APPLICATION_NAME=user
+      - SPRING_PROFILES_ACTIVE=native
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8001
+    entrypoint: ["./wait-for-it.sh", "config-server:8001", "--timeout=60", "--", "java", "-jar", "user-service.jar"]
+
+  # Booking Service
+  booking-service:
+    build: ./booking
+    container_name: booking-service
+    ports:
+      - "8004:8004"
+    networks:
+      - devteria-network
+    depends_on:
+      - mysql-booking
+      - config-server
+    environment:
+      - SPRING_APPLICATION_NAME=booking
+      - SPRING_PROFILES_ACTIVE=native
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8001
+    entrypoint: ["./wait-for-it.sh", "config-server:8001", "--timeout=60", "--", "java", "-jar", "booking-service.jar"]

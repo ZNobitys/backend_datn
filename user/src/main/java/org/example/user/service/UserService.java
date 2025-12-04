@@ -29,7 +29,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User createUser(@RequestBody @Validated CreateUserRequest createUserRequest) {
+    public User createUser(@Validated CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
             throw new RuntimeException("Email đã tồn tại");
         }
@@ -43,6 +43,7 @@ public class UserService {
         User user = new User();
         user.setFullName(createUserRequest.getFullName());
         user.setEmail(createUserRequest.getEmail());
+        user.setPhoneNumber(createUserRequest.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
         user.setRole(role);
         return userRepository.save(user);
@@ -69,7 +70,7 @@ public class UserService {
         User user = getUserById(id);
         user.setFullName(updateUserRequest.getFullName());
         user.setEmail(updateUserRequest.getEmail());
-        user.setPassword(updateUserRequest.getPassword());
+        user.setPhoneNumber(updateUserRequest.getPhoneNumber());
         user.setAge(updateUserRequest.getAge());
         user.setImg(updateUserRequest.getImg());
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
@@ -86,7 +87,6 @@ public class UserService {
         User user = getUserById(id);
         user.setFullName(adminUpdateUserRequest.getFullName());
         user.setEmail(adminUpdateUserRequest.getEmail());
-        user.setPassword(adminUpdateUserRequest.getPassword());
         user.setAge(adminUpdateUserRequest.getAge());
 
         if (adminUpdateUserRequest.getPassword() != null && !adminUpdateUserRequest.getPassword().isEmpty()) {

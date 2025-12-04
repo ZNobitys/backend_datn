@@ -7,7 +7,16 @@ public class UpdateUserRequest {
     private String email;
     private String password;
     private int age;
+    private int phoneNumber;
     private byte[] img;
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getFullName() {
         return fullName;

@@ -1,7 +1,5 @@
 package org.example.user.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.example.user.entity.Role;
 import org.example.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,11 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
+
+    // Constructor thủ công
+    public CustomUserDetails(User user) {
+        this.user = user;
+    }
 
     public Integer getId() {
         return user.getId();

@@ -6,9 +6,19 @@ import java.util.List;
 public class CreateUserRequest {
     private String fullName;
     private String email;
+    @Size(min = 10, max = 10)
+    private int phoneNumber;
     @Size(min = 6,  message = "Mật khẩu bao gồm ít nhất 6 ký tự", max = 50)
     private String password;
     private String role;
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getFullName() {
         return fullName;
