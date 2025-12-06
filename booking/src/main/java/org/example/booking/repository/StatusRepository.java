@@ -1,11 +1,11 @@
-package org.example.booking.reponsitory;
+package org.example.booking.repository;
 
 import org.example.booking.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface StatusReponsitory extends JpaRepository<Status, Integer> {
+public interface StatusRepository extends JpaRepository<Status, Integer> {
     Optional<Status> findByStatusName(String statusName);
     Optional<Status> findById(Integer id);
 }

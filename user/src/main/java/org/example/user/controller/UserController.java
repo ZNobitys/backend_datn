@@ -10,6 +10,7 @@ import org.example.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -61,5 +62,11 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     User updateUser(@PathVariable Integer id, @RequestBody UpdateUserRequest updateUserRequest) {
         return userService.updateUserById(id, updateUserRequest);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(user);
     }
 }

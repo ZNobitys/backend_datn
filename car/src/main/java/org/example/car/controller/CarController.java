@@ -3,6 +3,8 @@ package org.example.car.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.example.car.entity.Car;
 import org.example.car.request.CarRequest;
 import org.example.car.service.CarService;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.List;
 
 @RestController
@@ -19,13 +23,20 @@ public class CarController {
     @Autowired
     private CarService carService;
 
+    private static final String SECRET =
+            "MySuperSecretKeyThatIsAtLeast32Chars!";
+
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+
     @PostMapping("/add")
-    public Car addCar(@RequestBody CarRequest request, @RequestHeader("Authorization") String token) {
+    public Car addCar(@RequestBody CarRequest request,
+                      @RequestHeader("Authorization") String token) {
         return carService.createCar(request, token);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Car> getCarsByUser(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public List<Car> getCarsByUser(@PathVariable Integer userId,
+                                   @RequestHeader("Authorization") String token) {
         return carService.getCarsByUser(userId, token);
     }
 
@@ -37,15 +48,20 @@ public class CarController {
     @PutMapping("/update/{carId}")
     public ResponseEntity<String> updateCar(@PathVariable Integer carId,
                                             @RequestBody CarRequest request,
-                                            @RequestHeader("Authorization") String token) throws JsonProcessingException {
+                                            @RequestHeader("Authorization") String token)
+            throws JsonProcessingException {
+
         Car updatedCar = carService.updateCar(carId, request, token);
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         return ResponseEntity.ok(mapper.writeValueAsString(updatedCar));
     }
 
     @DeleteMapping("/delete/{carId}")
-    String  deleteCar(@PathVariable Integer carId, @RequestHeader("Authorization") String token) {
+    public String deleteCar(@PathVariable Integer carId,
+                            @RequestHeader("Authorization") String token) {
         carService.deleteCar(carId, token);
         return "Đã xóa thành công";
     }
@@ -54,4 +70,23 @@ public class CarController {
     public List<Car> getCar(@PathVariable String licensePlate) {
         return carService.getCarsByLicensePlate(licensePlate);
     }
+
+    @GetMapping("/get/mycars")
+    public ResponseEntity<?> getMyCars(@RequestHeader("Authorization") String token) {
+        Integer userIdFromToken = Integer.parseInt(
+                Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(token.replace("Bearer ", ""))
+                        .getBody()
+                        .getSubject()
+        );
+
+        return ResponseEntity.ok(carService.getCarsByUser(userIdFromToken, token));
+    }
+    @GetMapping("/getcar/{carId}")
+    public Car getCarById(@PathVariable Integer carId) {
+        return carService.getCarbyId(carId);
+    }
+
 }

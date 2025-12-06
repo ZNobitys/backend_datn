@@ -19,7 +19,7 @@ public class BannerController {
     @PostMapping("/create")
     public ResponseEntity<?> createBanner(@RequestBody BannerRequest bannerRequest) {
         bannerService.createBanner(bannerRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(bannerRequest);
     }
 
     @GetMapping("/getall")

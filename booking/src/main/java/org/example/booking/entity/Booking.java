@@ -1,54 +1,33 @@
 package org.example.booking.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "BOOKING")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(name = "BOOKING_ID")
     private int bookingId;
-    @Column(name = "BOOKING_DATE")
-    private String bookingDate;
-    @Column(name = "DETAILS")
-    private String details;
-    @Column(name = "BOOKING_CREATEDATE")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime bookingCreateDate;
-    @Column(name = "USER_ID")
-    private int userId;
-    @Column(name = "CAR_ID")
-    private int carId;
-    @Column(name = "COMPONENTS_ID")
-    private int componentsId;
-    @Column(name = "QUANTITY_COMPONENTS")
-    private int quantityComponents;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "STATUS_BOOKING", joinColumns = @JoinColumn(name = "BOOKING_ID"), inverseJoinColumns = @JoinColumn(name = "STATUS_ID"))
+    private LocalDateTime bookingDate;
+    private String details;
+    private LocalDateTime bookingCreateDate;
+    private int userId;
+    private int carId;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
     private Status status;
 
-    public int getQuantityComponents() {
-        return quantityComponents;
-    }
-
-    public void setQuantityComponents(int quantityComponents) {
-        this.quantityComponents = quantityComponents;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BookingDetail> bookingDetails;
 
     public int getBookingId() {
         return bookingId;
@@ -58,20 +37,12 @@ public class Booking {
         this.bookingId = bookingId;
     }
 
-    public String getBookingDate() {
+    public LocalDateTime getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(String bookingDate) {
+    public void setBookingDate(LocalDateTime bookingDate) {
         this.bookingDate = bookingDate;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 
     public LocalDateTime getBookingCreateDate() {
@@ -80,6 +51,14 @@ public class Booking {
 
     public void setBookingCreateDate(LocalDateTime bookingCreateDate) {
         this.bookingCreateDate = bookingCreateDate;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public int getUserId() {
@@ -98,11 +77,19 @@ public class Booking {
         this.carId = carId;
     }
 
-    public int getComponentsId() {
-        return componentsId;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setComponentsId(int componentsId) {
-        this.componentsId = componentsId;
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public List<BookingDetail> getBookingDetails() {
+        return bookingDetails;
+    }
+
+    public void setBookingDetails(List<BookingDetail> bookingDetails) {
+        this.bookingDetails = bookingDetails;
     }
 }

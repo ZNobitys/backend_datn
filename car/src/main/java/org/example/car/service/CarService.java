@@ -36,14 +36,12 @@ public class CarService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    // Add car
     public Car createCar(CarRequest carRequest, String token) {
 
         Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token.replace("Bearer ", "")).getBody();
         Integer userIdFromToken = Integer.parseInt(claims.getSubject());
         List<String> roles = claims.get("roles", List.class);
 
-        // Nếu ownerId được truyền trong request, phải là admin mới được thêm cho người khác
         Integer ownerId = carRequest.getOwnerId() != null ? carRequest.getOwnerId() : userIdFromToken;
 
         if (!ownerId.equals(userIdFromToken) && !roles.contains("ROLE_ADMIN")) {
@@ -151,5 +149,9 @@ public class CarService {
         }
 
         carRepository.delete(car);
+    }
+
+    public Car getCarbyId(Integer carId) {
+        return carRepository.findCarByCarId(carId).orElseThrow(()->new RuntimeException("xe không tồn tại"));
     }
 }
